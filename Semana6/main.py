@@ -4,12 +4,9 @@ from tkinter import ttk
 import pymysql.cursors
 import config
 
-# Crear ventana principal
 root = tk.Tk()
 root.title('Semana 6')
 
-
-# Establecer conexión a la base de datos
 connection = pymysql.connect(host=config.DB_HOST,
                              user=config.DB_USER,
                              password=config.DB_PASSWORD,
@@ -19,21 +16,17 @@ connection = pymysql.connect(host=config.DB_HOST,
 def crear_bd():
     try:
         with connection.cursor() as cursor:
-            # Verificar si la base de datos ya existe
             cursor.execute(f"SHOW DATABASES LIKE '{config.DB_NAME}'")
             resultado = cursor.fetchone()
             if resultado:
                 mensaje.config(text="La base de datos ya existe \U0001F610")
             else:
-                # Crear la base de datos
                 cursor.execute(f"CREATE DATABASE {config.DB_NAME}")
-                # Seleccionar la base de datos creada
                 cursor.execute(f"USE {config.DB_NAME}")
                 connection.commit()
                 mensaje.config(text="Base de datos creada correctamente \U0001F44D")
     except Exception as e:
         mensaje.config(text=f"Error al crear la base de datos \U0001F630: {str(e)}")
-
 
 def tabla_existe():
     with connection.cursor() as cursor:
@@ -44,11 +37,9 @@ def tabla_existe():
 def seleccionar_bd():
     try:
         with connection.cursor() as cursor:
-            # Verificar si la base de datos ya existe
             cursor.execute(f"SHOW DATABASES LIKE '{config.DB_NAME}'")
             resultado = cursor.fetchone()
             if resultado:
-                # Seleccionar la base de datos
                 cursor.execute(f"USE {config.DB_NAME}")
             else:
                 mensaje.config(text="La base de datos no existe, por favor crea la base de datos primero \U0001F630")
@@ -65,27 +56,21 @@ def limpiar_tabla():
 
 def obtener_datos():
     with connection.cursor() as cursor:
-        # Obtener todos los datos de la tabla
         cursor.execute(f"SELECT * FROM medicos")
         datos = cursor.fetchall()
-        # Crear un DataFrame con los datos
         df = pd.DataFrame(datos)
-        # Dividir los datos por género
         hombres = df[df['sexo'] == 'M']
         mujeres = df[df['sexo'] == 'F']
         return hombres, mujeres
 
-# Crear función para crear la tabla
 def crear_tabla():
     try:
         with connection.cursor() as cursor:
-            # Verificar si la tabla ya existe
             cursor.execute(f"SHOW TABLES LIKE 'medicos'")
             resultado = cursor.fetchone()
             if resultado:
                 mensaje.config(text="La tabla ya existe \U0001F610")
             else:
-                # Crear la tabla
                 sql = f"""CREATE TABLE medicos (
                         id INT(11) NOT NULL AUTO_INCREMENT,
                         nombre VARCHAR(255) NOT NULL,
@@ -102,7 +87,6 @@ def crear_tabla():
     except:
         mensaje.config(text="Error al crear la tabla \U0001F630")
 
-# Crear función para insertar datos
 def insertar_datos():
     if not seleccionar_bd():
         return
@@ -112,13 +96,11 @@ def insertar_datos():
 
     try:
         with connection.cursor() as cursor:
-            # Verificar si hay datos en la tabla
             cursor.execute(f"SELECT COUNT(*) AS total FROM medicos")
             resultado = cursor.fetchone()
             if resultado['total'] > 0:
                 mensaje.config(text="Los datos ya fueron insertados \U0001F610")
             else:
-                # Insertar datos en la tabla
                 sql = "INSERT INTO medicos (nombre, apellido, rut, sexo, direccion, edad) VALUES (%s, %s, %s, %s, %s, %s)"
                 val = [("Juan", "Pérez", "12.345.678-9", "M", "Calle Falsa 123", 30),
                        ("Pedro", "González", "23.456.789-0", "M", "Avenida Real 456", 45),
@@ -131,8 +113,6 @@ def insertar_datos():
                 mensaje.config(text="Datos insertados correctamente \U0001F44D")
     except Exception as e:
         mensaje.config(text=f"Error al insertar datos \U0001F630: {str(e)}")
-
-
 
 def filtrar_datos(genero=None):
     if not seleccionar_bd():
@@ -154,9 +134,6 @@ def filtrar_datos(genero=None):
     for index, row in datos_filtrados.iterrows():
         tabla_datos.insert('', index, text='', values=(row['nombre'], row['apellido'], row['rut'], row['sexo'], row['direccion'], row['edad']))
 
-
-
-# Crear botones
 boton_hombres = tk.Button(root, text='Mostrar Hombres', command=lambda: filtrar_datos('M'))
 boton_mujeres = tk.Button(root, text='Mostrar Mujeres', command=lambda: filtrar_datos('F'))
 boton_todos = tk.Button(root, text='Mostrar Todos', command=lambda: filtrar_datos())
@@ -166,12 +143,8 @@ boton_insertar_datos = tk.Button(root, text='Insertar datos', command=insertar_d
 boton_salir = tk.Button(root, text='Salir', command=root.quit)
 boton_limpiar = tk.Button(root, text='Limpiar Tabla', command=limpiar_tabla)
 
-
-
-# Crear mensaje de estado
 mensaje = tk.Label(root, text='')
 
-# Colocar botones y mensaje en la ventana
 boton_crear_bd.grid(row=0, column=0, padx=10, pady=10)
 boton_crear_tabla.grid(row=1, column=0, padx=10, pady=10)
 boton_insertar_datos.grid(row=2, column=0, padx=10, pady=10)
