@@ -9,6 +9,7 @@ gráfico en donde se registran los siguientes datos:
 - Sexo
 - Ingreso
 - Impuesto
+
 Adicionalmente, en la aplicación se deben diseñar dos botones: el primero debe calcular el impuesto
 en función del ingreso que es introducido en el formulario, y el segundo botón debe enviar los datos en
 un archivo csv al Departamento de Impuestos.
