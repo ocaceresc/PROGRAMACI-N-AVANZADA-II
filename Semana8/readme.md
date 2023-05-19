@@ -12,7 +12,8 @@ gráfico en donde se registran los siguientes datos:
 Adicionalmente, en la aplicación se deben diseñar dos botones: el primero debe calcular el impuesto
 en función del ingreso que es introducido en el formulario, y el segundo botón debe enviar los datos en
 un archivo csv al Departamento de Impuestos.
-A continuación:
+
+### A continuación:
 1. Describe detalladamente la instalación y configuración de la librería pertinente en Python para
 elaborar el registro. Adicionalmente, debes identificar los elementos de un formulario que
 utilizarás para su respectiva implementación.
